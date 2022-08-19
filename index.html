@@ -191,7 +191,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-08-18 22:38:15" itemprop="dateModified" datetime="2022-08-18T22:38:15+08:00">2022-08-18</time>
+                <time title="Modified: 2022-08-19 22:06:29" itemprop="dateModified" datetime="2022-08-19T22:06:29+08:00">2022-08-19</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -219,8 +219,13 @@
 <li>-i表示STDIN开启，</li>
 <li>-t表示为分配的容器分配伪tty终端</li>
 <li>-d表示容器在后台运行</li>
+<li>-p指定容器对外公开的端口, -p ip:port:port1,容器的port1端口绑定到主机的ip和port端口。不跟具体端口，开放EXPOSE指令公开的所有端口</li>
 <li>–name指定容器名字</li>
 <li>–restart由于错误容器停止时，检查错误代码决定是否重启容器</li>
+<li>–entrypoint可以覆盖ENTRYPOINT指令</li>
+<li>-w可以覆盖WORKDIR指定的指令运行目录</li>
+<li>-e可以传递环境变量</li>
+<li>-u覆盖USER指令的值</li>
 </ul>
 </li>
 <li>docker ps:查看正在运行的容器<ul>
@@ -260,6 +265,8 @@
 <li>–no-cache:不使用缓存，确保每次构建都使用最新内容</li>
 </ul>
 </li>
+<li>docker history:查看构建的详细过程信息以及构建指令</li>
+<li>docker port containerId/name port:查询容器端口在主机映射的端口</li>
 </ol>
 <h4 id="镜像的基本使用"><a href="#镜像的基本使用" class="headerlink" title="镜像的基本使用"></a>镜像的基本使用</h4><blockquote>
 <p>镜像由文件系统叠加而成<br>最低层是引导文件系统bootfs，容器启动后会被卸载<br>第二层是root文件系统rootfs，rootfs可以是一种或多种操作系统，永远为只读状态<br>一个镜像由多个镜像叠加而成，启动时docker会在最顶层添加一个读写层<br>docker使用写时复制机制，当文件系统发生变化时，从下层的只读层复制到顶层读写层，只读版本依然存在，但被副本所隐藏</p>
@@ -269,7 +276,16 @@
 <li>每条RUN都会创建一个新镜像层，执行成功，会提交该层</li>
 <li>某条失败后，会保存中间镜像层，便于调试定位  </li>
 </ul>
-<h5 id="构建模板指令"><a href="#构建模板指令" class="headerlink" title="构建模板指令"></a>构建模板指令</h5>
+<h5 id="构建模板指令"><a href="#构建模板指令" class="headerlink" title="构建模板指令"></a>构建模板指令</h5><ul>
+<li>MAINTAINER:添加作者详细信息</li>
+<li>ENV:设置环境变量</li>
+<li>CMD:指定容器启动时要执行的命令，docker run中的指令会覆盖CMD的指令，Dockerfile只能指定一条CMD，多条只有最后一条被使用，推荐以下方式:CMD [“/bin/bash”, “-l”]</li>
+<li>RUN:容器构建时要执行的命令</li>
+<li>ENTRYPOINT:类似于CMD，docker run的命令会传递给ENTRYPOINT指令，可以和CMD配合  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ENTRYPOINT [&quot;/usr/bin/nginx&quot;]</span><br><span class="line">CMD [&quot;-h&quot;]</span><br><span class="line"># docker run传递指令则覆盖CMD和ENTRYPOINT拼接，否则运行 /usr/bin/nginx -h</span><br><span class="line"># docker run可以通过--entrypoint覆盖ENTRYPOINT</span><br></pre></td></tr></table></figure></li>
+<li>WORKDIR:指定工作目录，ENTREYPOINT、/、CMD指定的程序会在该目录下运行，docker run可以通过-w覆盖工作目录</li>
+<li>USER:指定用户</li>
+</ul>
+
       
     </div>
 
