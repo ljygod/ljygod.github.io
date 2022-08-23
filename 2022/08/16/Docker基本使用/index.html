@@ -28,7 +28,7 @@
 <meta property="og:description" content="Docker基本使用基本命令 docker run -it ubuntu :使用ubuntu镜像，本地没有且未指定版本，默认从Docker Hub拉取latest版本 -i表示STDIN开启， -t表示为分配的容器分配伪tty终端 -d表示容器在后台运行 -p指定容器对外公开的端口, -p ip:port:port1,容器的port1端口绑定到主机的ip和port端口。不跟具体端口，开放EXPOS">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-08-16T14:21:56.000Z">
-<meta property="article:modified_time" content="2022-08-19T14:06:29.800Z">
+<meta property="article:modified_time" content="2022-08-23T14:07:26.905Z">
 <meta property="article:author" content="ljyGod">
 <meta property="article:tag" content="Docker">
 <meta name="twitter:card" content="summary">
@@ -196,7 +196,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-08-19 22:06:29" itemprop="dateModified" datetime="2022-08-19T22:06:29+08:00">2022-08-19</time>
+                <time title="Modified: 2022-08-23 22:07:26" itemprop="dateModified" datetime="2022-08-23T22:07:26+08:00">2022-08-23</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -256,7 +256,7 @@
 <li>docker stats:查看容器的状态，可同时指定多个容器</li>
 <li>docekr exec:在容器内部启动额外的新进程，docker exec -it container_id bash比较常用</li>
 <li>docker inspect:查看容器详细信息，包括配置信息、网络信息等</li>
-<li>docker images:列除docker镜像</li>
+<li>docker images:列除docker镜像， docker images -a -q获取所有镜像id 男男女女</li>
 <li>docker pull:从docker hub拉取镜像</li>
 <li>docker search:查找docker hub上的镜像</li>
 <li>docker commit:创建对象，只创建容器镜像和当前容器的差异部分，轻量化更新<ul>
@@ -272,6 +272,7 @@
 </li>
 <li>docker history:查看构建的详细过程信息以及构建指令</li>
 <li>docker port containerId/name port:查询容器端口在主机映射的端口</li>
+<li>docker rmi:删除镜像</li>
 </ol>
 <h4 id="镜像的基本使用"><a href="#镜像的基本使用" class="headerlink" title="镜像的基本使用"></a>镜像的基本使用</h4><blockquote>
 <p>镜像由文件系统叠加而成<br>最低层是引导文件系统bootfs，容器启动后会被卸载<br>第二层是root文件系统rootfs，rootfs可以是一种或多种操作系统，永远为只读状态<br>一个镜像由多个镜像叠加而成，启动时docker会在最顶层添加一个读写层<br>docker使用写时复制机制，当文件系统发生变化时，从下层的只读层复制到顶层读写层，只读版本依然存在，但被副本所隐藏</p>
@@ -289,6 +290,13 @@
 <li>ENTRYPOINT:类似于CMD，docker run的命令会传递给ENTRYPOINT指令，可以和CMD配合  <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">ENTRYPOINT [&quot;/usr/bin/nginx&quot;]</span><br><span class="line">CMD [&quot;-h&quot;]</span><br><span class="line"># docker run传递指令则覆盖CMD和ENTRYPOINT拼接，否则运行 /usr/bin/nginx -h</span><br><span class="line"># docker run可以通过--entrypoint覆盖ENTRYPOINT</span><br></pre></td></tr></table></figure></li>
 <li>WORKDIR:指定工作目录，ENTREYPOINT、/、CMD指定的程序会在该目录下运行，docker run可以通过-w覆盖工作目录</li>
 <li>USER:指定用户</li>
+<li>VOLUME:为容器添加卷</li>
+<li>ADD:将构建环境下的文件复制到镜像中</li>
+<li>COPY:类似于ADD，但不会对文件进行提取和解压操作，源文件必须和构建文件在同一目录下</li>
+<li>LABEL:为镜像添加元数据，使用label=”value”的形式，多条元数据使用空给分开</li>
+<li>STOPSIGNAL:设置容器停止时发送什么系统调用信号给容器</li>
+<li>ARG:运行时传递给构建运行的变量，在构建时使用–build-arg来指定参数值，docker build –build-arg key=value</li>
+<li>ONBUILD:添加触发器，当一个镜像用做其他镜像的基础镜像时，该触发器会被触发</li>
 </ul>
 
     </div>
@@ -311,7 +319,10 @@
     <a href="/2022/08/16/Hexo%E4%BD%BF%E7%94%A8/" rel="prev" title="Hexo使用">
       <i class="fa fa-chevron-left"></i> Hexo使用
     </a></div>
-      <div class="post-nav-item"></div>
+      <div class="post-nav-item">
+    <a href="/2022/08/23/Docker%E6%B5%8B%E8%AF%95%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/" rel="next" title="Docker测试基本使用">
+      Docker测试基本使用 <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
       </footer>
     
@@ -384,7 +395,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
