@@ -183,10 +183,16 @@
                 <i class="far fa-calendar"></i>
               </span>
               <span class="post-meta-item-text">Posted on</span>
-              
 
-              <time title="Created: 2022-11-06 22:01:04 / Modified: 22:33:12" itemprop="dateCreated datePublished" datetime="2022-11-06T22:01:04+08:00">2022-11-06</time>
+              <time title="Created: 2022-11-06 22:01:04" itemprop="dateCreated datePublished" datetime="2022-11-06T22:01:04+08:00">2022-11-06</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2022-11-07 21:44:02" itemprop="dateModified" datetime="2022-11-07T21:44:02+08:00">2022-11-07</time>
+              </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
                 <i class="far fa-folder"></i>
@@ -214,7 +220,9 @@
 <li>异步任务启动<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">final JobClient jobClient = env.executeAsync();</span><br><span class="line">final JobExecutionResult jobExecutionResult = jobClient.getJobExecutionResult().get();</span><br></pre></td></tr></table></figure>
 <h4 id="Data-Sources"><a href="#Data-Sources" class="headerlink" title="Data Sources"></a>Data Sources</h4></li>
 <li>使用ParallelSourceFunction（或RichParallelSourceFunction）或SourceFunction自定义DataSources<h4 id="config"><a href="#config" class="headerlink" title="config"></a>config</h4></li>
-<li>env.setBufferTimeout(timeoutMillis), 缓冲区超时时间，设置为-1，只有缓冲区满了才会发往下一个算子</li>
+<li>env.setBufferTimeout(timeoutMillis), 缓冲区超时时间，设置为-1，只有缓冲区满了才会发往下一个算子<h4 id="执行模式"><a href="#执行模式" class="headerlink" title="执行模式"></a>执行模式</h4></li>
+<li>通过命令行控制<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/flink run -Dexecution.runtime-mode=BATCH &lt;jarFile&gt;</span><br></pre></td></tr></table></figure></li>
+<li>通过代码配置控制<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line">env.setRuntimeMode(RuntimeExecutionMode.BATCH);</span><br></pre></td></tr></table></figure></li>
 </ol>
 
       
