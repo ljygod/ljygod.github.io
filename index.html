@@ -191,7 +191,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-11-07 21:44:02" itemprop="dateModified" datetime="2022-11-07T21:44:02+08:00">2022-11-07</time>
+                <time title="Modified: 2022-11-08 21:12:40" itemprop="dateModified" datetime="2022-11-08T21:12:40+08:00">2022-11-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -222,7 +222,12 @@
 <li>使用ParallelSourceFunction（或RichParallelSourceFunction）或SourceFunction自定义DataSources<h4 id="config"><a href="#config" class="headerlink" title="config"></a>config</h4></li>
 <li>env.setBufferTimeout(timeoutMillis), 缓冲区超时时间，设置为-1，只有缓冲区满了才会发往下一个算子<h4 id="执行模式"><a href="#执行模式" class="headerlink" title="执行模式"></a>执行模式</h4></li>
 <li>通过命令行控制<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/flink run -Dexecution.runtime-mode=BATCH &lt;jarFile&gt;</span><br></pre></td></tr></table></figure></li>
-<li>通过代码配置控制<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line">env.setRuntimeMode(RuntimeExecutionMode.BATCH);</span><br></pre></td></tr></table></figure></li>
+<li>通过代码配置控制<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line">env.setRuntimeMode(RuntimeExecutionMode.BATCH);</span><br></pre></td></tr></table></figure>
+<h4 id="WaterMark"><a href="#WaterMark" class="headerlink" title="WaterMark"></a>WaterMark</h4></li>
+<li>实现WatermarkGenerator，自定义WaterMark生成</li>
+<li>onEvent()标记事件数据，也可以根据事件中的特殊标记，发出WaterMark</li>
+<li>onPeriodicEmit()周期性发出WaterMark</li>
+<li>ExecutionConfig.setAutoWatermarkInterval()配置WaterMark生成周期，每次调用onPeriodicEmit获取WaterMark，如果大于前一个发出新的WaterMark</li>
 </ol>
 
       

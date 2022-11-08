@@ -28,7 +28,7 @@
 <meta property="og:description" content="Flink DataStream任务启动执行main方法只会创建dataflow有向图，只有在执行execute后，flink任务才会真正开始运行  同步任务启动1environment.execute 异步任务启动12final JobClient jobClient &#x3D; env.executeAsync();final JobExecutionResult jobExecutionResult">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2022-11-06T14:01:04.000Z">
-<meta property="article:modified_time" content="2022-11-07T13:44:02.421Z">
+<meta property="article:modified_time" content="2022-11-08T13:12:40.502Z">
 <meta property="article:author" content="ljyGod">
 <meta property="article:tag" content="Flink">
 <meta name="twitter:card" content="summary">
@@ -196,7 +196,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2022-11-07 21:44:02" itemprop="dateModified" datetime="2022-11-07T21:44:02+08:00">2022-11-07</time>
+                <time title="Modified: 2022-11-08 21:12:40" itemprop="dateModified" datetime="2022-11-08T21:12:40+08:00">2022-11-08</time>
               </span>
             <span class="post-meta-item">
               <span class="post-meta-item-icon">
@@ -227,7 +227,12 @@
 <li>使用ParallelSourceFunction（或RichParallelSourceFunction）或SourceFunction自定义DataSources<h4 id="config"><a href="#config" class="headerlink" title="config"></a>config</h4></li>
 <li>env.setBufferTimeout(timeoutMillis), 缓冲区超时时间，设置为-1，只有缓冲区满了才会发往下一个算子<h4 id="执行模式"><a href="#执行模式" class="headerlink" title="执行模式"></a>执行模式</h4></li>
 <li>通过命令行控制<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bin/flink run -Dexecution.runtime-mode=BATCH &lt;jarFile&gt;</span><br></pre></td></tr></table></figure></li>
-<li>通过代码配置控制<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line">env.setRuntimeMode(RuntimeExecutionMode.BATCH);</span><br></pre></td></tr></table></figure></li>
+<li>通过代码配置控制<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();</span><br><span class="line">env.setRuntimeMode(RuntimeExecutionMode.BATCH);</span><br></pre></td></tr></table></figure>
+<h4 id="WaterMark"><a href="#WaterMark" class="headerlink" title="WaterMark"></a>WaterMark</h4></li>
+<li>实现WatermarkGenerator，自定义WaterMark生成</li>
+<li>onEvent()标记事件数据，也可以根据事件中的特殊标记，发出WaterMark</li>
+<li>onPeriodicEmit()周期性发出WaterMark</li>
+<li>ExecutionConfig.setAutoWatermarkInterval()配置WaterMark生成周期，每次调用onPeriodicEmit获取WaterMark，如果大于前一个发出新的WaterMark</li>
 </ol>
 
     </div>
@@ -309,7 +314,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink-DataStream"><span class="nav-number">1.</span> <span class="nav-text">Flink DataStream</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E5%90%AF%E5%8A%A8"><span class="nav-number">1.1.</span> <span class="nav-text">任务启动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Data-Sources"><span class="nav-number">1.2.</span> <span class="nav-text">Data Sources</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#config"><span class="nav-number">1.3.</span> <span class="nav-text">config</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.4.</span> <span class="nav-text">执行模式</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Flink-DataStream"><span class="nav-number">1.</span> <span class="nav-text">Flink DataStream</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%BB%E5%8A%A1%E5%90%AF%E5%8A%A8"><span class="nav-number">1.1.</span> <span class="nav-text">任务启动</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Data-Sources"><span class="nav-number">1.2.</span> <span class="nav-text">Data Sources</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#config"><span class="nav-number">1.3.</span> <span class="nav-text">config</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%89%A7%E8%A1%8C%E6%A8%A1%E5%BC%8F"><span class="nav-number">1.4.</span> <span class="nav-text">执行模式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#WaterMark"><span class="nav-number">1.5.</span> <span class="nav-text">WaterMark</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
